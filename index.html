@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaveesh Bhat — Java Engineer</title>
+<meta name="description" content="Java Engineer specializing in cloud-native microservices, Apache Kafka, Spring Boot and Kubernetes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --ink: #0d0d0d;
+  --paper: #f5f2eb;
+  --cream: #ede9df;
+  --rust: #c0392b;
+  --rust-light: #e8583d;
+  --gold: #c9a84c;
+  --muted: #7a7060;
+  --border: #d4cfc3;
+  --card: #faf8f3;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* ── Custom cursor ────────────────────────────── */
+.cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--rust);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+  mix-blend-mode: multiply;
+}
+.cursor.expand { transform: scale(5); opacity: 0.3; }
+
+/* ── Noise overlay ────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+/* ── Nav ──────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 48px;
+  background: rgba(245,242,235,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.nav-logo span { color: var(--rust); }
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--rust); }
+
+/* ── Hero ─────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: rise 0.8s 0.2s forwards;
+}
+
+.hero-label::before {
+  content: '─── ';
+}
+
+h1.hero-name {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(52px, 10vw, 120px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  opacity: 0;
+  animation: rise 0.8s 0.35s forwards;
+}
+
+h1.hero-name em {
+  font-style: italic;
+  color: var(--rust);
+}
+
+.hero-role {
+  margin-top: 32px;
+  font-size: clamp(14px, 2vw, 18px);
+  color: var(--muted);
+  max-width: 560px;
+  opacity: 0;
+  animation: rise 0.8s 0.5s forwards;
+  line-height: 1.6;
+}
+
+.hero-ctas {
+  margin-top: 48px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: rise 0.8s 0.65s forwards;
+}
+
+.btn {
+  display: inline-block;
+  padding: 13px 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: none;
+}
+
+.btn-primary {
+  background: var(--rust);
+  color: white;
+  border: 2px solid var(--rust);
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--rust);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+
+.btn-ghost:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* hero big number */
+.hero-bg-number {
+  position: absolute;
+  right: -20px;
+  bottom: -40px;
+  font-family: 'Fraunces', serif;
+  font-size: clamp(200px, 30vw, 420px);
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  animation: rise 1s 0.8s forwards;
+}
+
+/* ── Section basics ───────────────────────────── */
+section {
+  padding: 100px 48px;
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 12px;
+}
+
+.section-label::before { content: '// '; }
+
+h2.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 56px;
+}
+
+/* ── About ────────────────────────────────────── */
+#about .about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.about-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.about-text p + p { margin-top: 16px; }
+
+.about-text strong { color: var(--ink); }
+
+.about-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px 24px;
+}
+
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--rust);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ── Experience ───────────────────────────────── */
+.exp-item {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.exp-meta {
+  padding-top: 4px;
+}
+
+.exp-company {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.exp-period {
+  font-size: 11px;
+  color: var(--gold);
+  margin-top: 4px;
+}
+
+.exp-role {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.exp-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exp-bullets li {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.exp-bullets li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--rust);
+}
+
+/* ── Skills ───────────────────────────────────── */
+#skills .skills-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.skill-group {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 32px 28px;
+}
+
+.skill-group-title {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.skill-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  font-size: 11px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+
+.skill-tag:hover {
+  background: var(--rust);
+  color: white;
+  border-color: var(--rust);
+}
+
+/* ── Projects ─────────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.project-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 40px 36px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--rust);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover::before { transform: scaleX(1); }
+.project-card:hover { transform: translateY(-3px); }
+
+.project-num {
+  font-family: 'Fraunces', serif;
+  font-size: 60px;
+  font-weight: 900;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.project-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.project-type {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 16px;
+}
+
+.project-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-tag {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+/* ── Contact ──────────────────────────────────── */
+#contact {
+  background: var(--ink);
+  color: var(--paper);
+  border-top: none;
+}
+
+#contact .section-label { color: var(--rust-light); }
+#contact h2.section-title { color: var(--paper); }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.contact-text {
+  font-size: 15px;
+  color: #888;
+  line-height: 1.7;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  padding: 20px 24px;
+  border: 1px solid #2a2a2a;
+  color: var(--paper);
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.contact-link:hover {
+  border-color: var(--rust);
+  background: rgba(192,57,43,0.08);
+  padding-left: 32px;
+}
+
+.contact-link-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #555;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.contact-link-val { font-size: 13px; }
+
+/* ── Footer ───────────────────────────────────── */
+footer {
+  background: var(--ink);
+  color: #333;
+  text-align: center;
+  padding: 24px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  border-top: 1px solid #1a1a1a;
+}
+
+/* ── Scroll reveal ────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Animations ───────────────────────────────── */
+@keyframes rise {
+  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(24px); }
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  section, #hero { padding: 80px 24px; }
+  #about .about-grid,
+  .exp-item,
+  .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+  #skills .skills-container,
+  .projects-grid { grid-template-columns: 1fr; }
+  .exp-item { grid-template-columns: 1fr; }
+  .hero-bg-number { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">KB<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-label">Available for opportunities</p>
+  <h1 class="hero-name">Kaveesh<br><em>Bhat</em></h1>
+  <p class="hero-role">
+    Java Engineer building cloud-native, event-driven systems.<br>
+    Spring Boot · Apache Kafka · Kubernetes · Microservices.
+  </p>
+  <div class="hero-ctas">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="mailto:12akaveeshbhat@gmail.com" class="btn btn-ghost">Get in Touch</a>
+  </div>
+  <div class="hero-bg-number">4+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label reveal">About</p>
+  <h2 class="section-title reveal">Engineer at<br>heart.</h2>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm a <strong>Java Engineer</strong> with hands-on production experience building distributed, resilient systems at scale. My work at Cognizant (Citizens GCC) gave me deep roots in event-driven architecture and microservice observability.</p>
+      <p>I'm passionate about the intersection of <strong>system design and developer experience</strong> — writing code that's not only functional, but maintainable, observable, and built to last.</p>
+      <p>Outside of engineering, I enjoy exploring distributed systems theory, contributing to side projects, and finding the cleanest way to solve the messiest problems.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-box">
+        <div class="stat-num">1.5+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Major Projects</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">100k</div>
+        <div class="stat-label">TPS Handled</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Bugs Squashed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label reveal">Experience</p>
+  <h2 class="section-title reveal">Where I've<br>worked.</h2>
+
+  <div class="exp-item reveal">
+    <div class="exp-meta">
+      <div class="exp-company">Cognizant Technology Solutions</div>
+      <div class="exp-period">2021 – May 2025</div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-role">Programmer Analyst<br><span style="font-size:16px;color:var(--muted)">(Citizens GCC)</span></div>
+      <ul class="exp-bullets">
+        <li>Developed and optimized distributed Spring Boot microservices contributing to a resilient, cloud-native enterprise ecosystem.</li>
+        <li>Implemented Kafka producers/consumers for high-throughput event streaming, enabling real-time data flow and service decoupling.</li>
+        <li>Built and consumed secure REST APIs, improving inter-service communication and reducing overall service latency.</li>
+        <li>Collaborated with DevOps, QA, and architecture teams to improve automated CI/CD workflows, observability, and reliability.</li>
+        <li>Investigated and resolved production issues through log analysis, Kafka monitoring, and distributed system debugging.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label reveal">Skills</p>
+  <h2 class="section-title reveal">My tech<br>stack.</h2>
+  <div class="skills-container reveal">
+    <div class="skill-group">
+      <div class="skill-group-title">Languages</div>
+      <ul class="skill-list">
+        <li class="skill-tag">Java 11/17</li>
+        <li class="skill-tag">SQL</li>
+        <li class="skill-tag">Python</li>
+        <li class="skill-tag">JavaScript</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Frameworks & Runtimes</div>
+      <ul class="skill-list">
+        <li class="skill-tag">Spring Boot</li>
+        <li class="skill-tag">Spring Cloud</li>
+        <li class="skill-tag">JPA / Hibernate</li>
+        <li class="skill-tag">TensorFlow</li>
+        <li class="skill-tag">Keras</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Infrastructure & Ops</div>
+      <ul class="skill-list">
+        <li class="skill-tag">Apache Kafka</li>
+        <li class="skill-tag">Docker</li>
+        <li class="skill-tag">Kubernetes</li>
+        <li class="skill-tag">Jenkins</li>
+        <li class="skill-tag">CI/CD</li>
+        <li class="skill-tag">Linux</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Architecture</div>
+      <ul class="skill-list">
+        <li class="skill-tag">Microservices</li>
+        <li class="skill-tag">Event-Driven</li>
+        <li class="skill-tag">RESTful APIs</li>
+        <li class="skill-tag">Saga Pattern</li>
+        <li class="skill-tag">Outbox Pattern</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Databases & Caching</div>
+      <ul class="skill-list">
+        <li class="skill-tag">MySQL</li>
+        <li class="skill-tag">Redis</li>
+        <li class="skill-tag">SQL</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Observability & Tools</div>
+      <ul class="skill-list">
+        <li class="skill-tag">Prometheus</li>
+        <li class="skill-tag">Grafana</li>
+        <li class="skill-tag">Git</li>
+        <li class="skill-tag">JWT Security</li>
+        <li class="skill-tag">Agile / Scrum</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">Projects</p>
+  <h2 class="section-title reveal">Things I've<br>built.</h2>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="project-num">01</div>
+      <div class="project-title">Event-Driven Order Processing & Notification System</div>
+      <div class="project-type">Microservices · Cloud Native</div>
+      <p class="project-desc">
+        Fault-tolerant, event-driven microservices using Spring Boot, Kafka, MySQL, Docker deployed on Kubernetes with Pods, Services, ConfigMaps, and HPA. Implemented Saga and Outbox patterns for reliable multi-service transactions and exactly-once event delivery. Integrated JWT security, Redis caching, and Prometheus/Grafana for production-ready observability.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Spring Boot</span>
+        <span class="project-tag">Kafka</span>
+        <span class="project-tag">Kubernetes</span>
+        <span class="project-tag">Redis</span>
+        <span class="project-tag">Prometheus</span>
+        <span class="project-tag">Grafana</span>
+        <span class="project-tag">JWT</span>
+        <span class="project-tag">MySQL</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">02</div>
+      <div class="project-title">Real-Time Fraud Detection & Alerting System</div>
+      <div class="project-type">Stream Processing · ML</div>
+      <p class="project-desc">
+        Real-time fraud detection using Spring Boot microservices with Kafka handling 100k+ transactions/minute. Built Transaction, Risk Scoring, Rule Engine, and Alerting Services with fully asynchronous communication. Implemented a fraud scoring engine combining rule-based filtering with a lightweight ML model for anomaly detection.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">Spring Boot</span>
+        <span class="project-tag">Kafka</span>
+        <span class="project-tag">100k TPS</span>
+        <span class="project-tag">Rule Engine</span>
+        <span class="project-tag">ML / Anomaly Detection</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-num">03</div>
+      <div class="project-title">Dementia Recognition System</div>
+      <div class="project-type">Deep Learning · Medical Imaging</div>
+      <p class="project-desc">
+        Deep learning model using pre-trained VGG16 to classify MRI brain scans into various stages of dementia. Preprocessed and augmented medical imaging datasets to enhance model generalization. Achieved high classification accuracy by fine-tuning convolutional layers and optimizing hyperparameters.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">TensorFlow</span>
+        <span class="project-tag">Keras</span>
+        <span class="project-tag">VGG16</span>
+        <span class="project-tag">Medical Imaging</span>
+        <span class="project-tag">CNN</span>
+      </div>
+    </div>
+
+    <div class="project-card reveal" style="background: var(--cream); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; min-height:300px;">
+      <div style="font-family:'Fraunces',serif;font-size:42px;font-weight:900;color:var(--border);margin-bottom:16px;">More coming</div>
+      <p style="font-size:12px;color:var(--muted);max-width:220px;line-height:1.6;">Always building. Check back or reach out to collaborate.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label reveal">Contact</p>
+  <h2 class="section-title reveal">Let's work<br>together.</h2>
+  <div class="contact-grid reveal">
+    <div class="contact-text">
+      <p>Open to full-time roles, contract work, and interesting conversations about distributed systems, microservices architecture, or Kafka at scale.</p>
+      <p style="margin-top:16px;">Based in <strong style="color:var(--paper)">Hyderabad, Telangana(Open to Relocation)</strong> — open to remote opportunities.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:12akaveeshbhat@gmail.com" class="contact-link">
+        <div>
+          <span class="contact-link-label">Email</span>
+          <span class="contact-link-val">12akaveeshbhat@gmail.com</span>
+        </div>
+      </a>
+      <a href="https://linkedin.com/in/kaveesh-bhat/" target="_blank" class="contact-link">
+        <div>
+          <span class="contact-link-label">LinkedIn</span>
+          <span class="contact-link-val">linkedin.com/in/kaveesh-bhat</span>
+        </div>
+      </a>
+      <a href="tel:+916006122535" class="contact-link">
+        <div>
+          <span class="contact-link-label">Phone</span>
+          <span class="contact-link-val">+91 6006-122535</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2025 Kaveesh Bhat &nbsp;·&nbsp; Built with care &nbsp;·&nbsp; Hyderabad, India
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX - 5 + 'px';
+  cursor.style.top = e.clientY - 5 + 'px';
+});
+document.querySelectorAll('a, button, .skill-tag, .project-card').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+});
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      entry.target.style.transitionDelay = (i % 4) * 0.08 + 's';
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+revealEls.forEach(el => observer.observe(el));
+
+// Smooth nav active state
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--rust)' : '';
+  });
+});
+</script>
+</body>
+</html>
