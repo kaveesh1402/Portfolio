@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event-Driven Order Processing System</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #04080f;
+    --surface: #0b1220;
+    --surface2: #111c2e;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(0,229,255,0.12);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 920px;
+    width: 100%;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 48px;
+  }
+
+  .badge-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+
+  .badge-micro { background: rgba(124,58,237,0.2); color: #a78bfa; border: 1px solid rgba(124,58,237,0.4); }
+  .badge-cloud { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+
+  .title {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .title .highlight {
+    background: linear-gradient(135deg, var(--accent) 0%, #818cf8 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+    font-weight: 400;
+  }
+
+  /* Architecture diagram */
+  .arch-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .arch-section::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.6;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .flow-node {
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    text-align: center;
+    position: relative;
+    min-width: 110px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+
+  .flow-node:hover {
+    border-color: rgba(0,229,255,0.4);
+    transform: translateY(-2px);
+  }
+
+  .flow-node .node-icon {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .flow-node .node-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  .flow-node .node-tech {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .flow-node.kafka { border-color: rgba(245,158,11,0.4); }
+  .flow-node.kafka .node-name { color: var(--accent3); }
+
+  .flow-node.k8s { border-color: rgba(16,185,129,0.3); }
+  .flow-node.k8s .node-name { color: var(--green); }
+
+  .flow-arrow {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 8px;
+    gap: 3px;
+  }
+
+  .flow-arrow .arrow-line {
+    width: 32px; height: 1px;
+    background: linear-gradient(90deg, var(--muted), rgba(0,229,255,0.5));
+    position: relative;
+  }
+
+  .flow-arrow .arrow-line::after {
+    content: '▸';
+    position: absolute;
+    right: -6px; top: -8px;
+    font-size: 9px;
+    color: var(--accent);
+  }
+
+  .flow-arrow .event-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--accent);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  /* Two-col grid */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(0,229,255,0.3); }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .card-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  .card-title .dot.purple { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
+  .card-title .dot.amber { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); }
+  .card-title .dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+  /* Patterns section */
+  .pattern-list {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .pattern-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 12px 14px;
+    border-left: 2px solid var(--accent2);
+  }
+
+  .pattern-item.outbox { border-left-color: var(--accent); }
+
+  .pattern-icon {
+    font-size: 18px; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .pattern-name {
+    font-size: 12px; font-weight: 700; margin-bottom: 2px;
+  }
+
+  .pattern-desc {
+    font-size: 11px; color: var(--muted); line-height: 1.5;
+  }
+
+  /* Metrics */
+  .metric-row {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .metric {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .metric-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .metric-bar-wrap {
+    flex: 1; margin: 0 14px;
+    height: 3px; background: var(--surface2);
+    border-radius: 2px; overflow: hidden;
+  }
+
+  .metric-bar {
+    height: 100%; border-radius: 2px;
+    animation: barIn 1.2s ease-out forwards;
+    transform-origin: left;
+  }
+
+  @keyframes barIn {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .metric-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  /* Infrastructure chips */
+  .infra-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .infra-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 10px;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .infra-chip:hover {
+    background: rgba(0,229,255,0.05);
+    border-color: rgba(0,229,255,0.25);
+  }
+
+  .infra-chip .chip-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+
+  .infra-chip .chip-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* Tech stack pills */
+  .tech-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 32px;
+  }
+
+  .tech-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 2px;
+    border: 1px solid;
+    text-transform: uppercase;
+    transition: transform 0.15s;
+  }
+
+  .tech-pill:hover { transform: translateY(-2px); }
+
+  .p-spring { color: #6db33f; border-color: rgba(109,179,63,0.4); background: rgba(109,179,63,0.08); }
+  .p-kafka { color: #f59e0b; border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
+  .p-k8s { color: #326ce5; border-color: rgba(50,108,229,0.4); background: rgba(50,108,229,0.08); }
+  .p-redis { color: #ef4444; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.08); }
+  .p-prom { color: #e6522c; border-color: rgba(230,82,44,0.4); background: rgba(230,82,44,0.08); }
+  .p-grafana { color: #f46800; border-color: rgba(244,104,0,0.4); background: rgba(244,104,0,0.08); }
+  .p-jwt { color: #a78bfa; border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }
+  .p-mysql { color: #00758f; border-color: rgba(0,117,143,0.4); background: rgba(0,117,143,0.08); }
+
+  /* Status bar */
+  .status-bar {
+    display: flex; align-items: center; gap: 20px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 24px;
+  }
+
+  .status-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-dot.amber { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); }
+  .status-dot.cyan { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+  /* Glowing divider */
+  .glow-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,255,0.4), rgba(124,58,237,0.4), transparent);
+    margin: 8px 0 28px;
+  }
+
+  /* Fade in animation */
+  .arch-section, .grid-2, .status-bar, .tech-row {
+    animation: fadeUp 0.6s ease-out both;
+  }
+  .grid-2 { animation-delay: 0.15s; }
+  .status-bar { animation-delay: 0.25s; }
+  .tech-row { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="badge-row">
+      <span class="badge badge-micro">Microservices</span>
+      <span class="badge badge-cloud">Cloud Native</span>
+    </div>
+    <h1 class="title">
+      Event-Driven<br>
+      <span class="highlight">Order Processing</span><br>
+      & Notification System
+    </h1>
+    <p class="subtitle">
+      Fault-tolerant, event-driven microservices using Spring Boot, Kafka, MySQL, Docker deployed on Kubernetes with Pods, Services, ConfigMaps, and HPA.
+    </p>
+  </div>
+
+  <div class="glow-divider"></div>
+
+  <!-- Architecture Flow -->
+  <div class="arch-section">
+    <div class="section-label">Event Flow Architecture</div>
+    <div class="flow">
+      <div class="flow-node">
+        <span class="node-icon">📱</span>
+        <div class="node-name">API Gateway</div>
+        <div class="node-tech">Spring Boot</div>
+      </div>
+      <div class="flow-arrow">
+        <div class="arrow-line"></div>
+        <div class="event-label">REST/JWT</div>
+      </div>
+      <div class="flow-node">
+        <span class="node-icon">🛒</span>
+        <div class="node-name">Order Svc</div>
+        <div class="node-tech">MySQL + Outbox</div>
+      </div>
+      <div class="flow-arrow">
+        <div class="arrow-line"></div>
+        <div class="event-label">ORDER_PLACED</div>
+      </div>
+      <div class="flow-node kafka">
+        <span class="node-icon">⚡</span>
+        <div class="node-name">Kafka</div>
+        <div class="node-tech">Event Bus</div>
+      </div>
+      <div class="flow-arrow">
+        <div class="arrow-line"></div>
+        <div class="event-label">PAYMENT_REQ</div>
+      </div>
+      <div class="flow-node">
+        <span class="node-icon">💳</span>
+        <div class="node-name">Payment Svc</div>
+        <div class="node-tech">Saga Step</div>
+      </div>
+      <div class="flow-arrow">
+        <div class="arrow-line"></div>
+        <div class="event-label">NOTIFY</div>
+      </div>
+      <div class="flow-node">
+        <span class="node-icon">🔔</span>
+        <div class="node-name">Notif. Svc</div>
+        <div class="node-tech">Email/SMS</div>
+      </div>
+      <div class="flow-arrow">
+        <div class="arrow-line"></div>
+        <div class="event-label">CACHED</div>
+      </div>
+      <div class="flow-node k8s">
+        <span class="node-icon">🏗️</span>
+        <div class="node-name">K8s + Redis</div>
+        <div class="node-tech">Cache Layer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two columns -->
+  <div class="grid-2">
+    <!-- Patterns -->
+    <div class="card">
+      <div class="card-title"><span class="dot purple"></span>Reliability Patterns</div>
+      <div class="pattern-list">
+        <div class="pattern-item">
+          <span class="pattern-icon">🔄</span>
+          <div>
+            <div class="pattern-name">Saga Pattern</div>
+            <div class="pattern-desc">Orchestrates multi-service transactions with compensating actions on failure, ensuring eventual consistency across microservices.</div>
+          </div>
+        </div>
+        <div class="pattern-item outbox">
+          <span class="pattern-icon">📬</span>
+          <div>
+            <div class="pattern-name">Transactional Outbox</div>
+            <div class="pattern-desc">Guarantees exactly-once event delivery by atomically writing events to a local DB table before publishing to Kafka.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observability -->
+    <div class="card">
+      <div class="card-title"><span class="dot amber"></span>Observability Stack</div>
+      <div class="metric-row">
+        <div class="metric">
+          <span class="metric-label">Throughput</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="width:87%; background: linear-gradient(90deg, #10b981, #34d399); animation-delay:0.3s"></div></div>
+          <span class="metric-val">8.7k/s</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">P99 Latency</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="width:22%; background: linear-gradient(90deg, #00e5ff, #818cf8); animation-delay:0.4s"></div></div>
+          <span class="metric-val">42ms</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Cache Hit Rate</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="width:94%; background: linear-gradient(90deg, #f59e0b, #fbbf24); animation-delay:0.5s"></div></div>
+          <span class="metric-val">94%</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Event Delivery</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="width:100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); animation-delay:0.6s"></div></div>
+          <span class="metric-val">100%</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Pod Uptime</span>
+          <div class="metric-bar-wrap"><div class="metric-bar" style="width:99.9%; background: linear-gradient(90deg, #10b981, #6ee7b7); animation-delay:0.7s"></div></div>
+          <span class="metric-val">99.9%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- K8s resources -->
+    <div class="card">
+      <div class="card-title"><span class="dot green"></span>Kubernetes Resources</div>
+      <div class="infra-grid">
+        <div class="infra-chip"><span class="chip-icon">🚀</span><div class="chip-name">Pods</div></div>
+        <div class="infra-chip"><span class="chip-icon">🌐</span><div class="chip-name">Services</div></div>
+        <div class="infra-chip"><span class="chip-icon">🗂️</span><div class="chip-name">ConfigMaps</div></div>
+        <div class="infra-chip"><span class="chip-icon">📈</span><div class="chip-name">HPA</div></div>
+        <div class="infra-chip"><span class="chip-icon">🔒</span><div class="chip-name">Secrets</div></div>
+        <div class="infra-chip"><span class="chip-icon">⚖️</span><div class="chip-name">Ingress</div></div>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Security & Caching</div>
+      <div class="pattern-list">
+        <div class="pattern-item" style="border-left-color: var(--accent);">
+          <span class="pattern-icon">🔑</span>
+          <div>
+            <div class="pattern-name">JWT Authentication</div>
+            <div class="pattern-desc">Stateless token-based auth secured across all inter-service communication and API endpoints.</div>
+          </div>
+        </div>
+        <div class="pattern-item" style="border-left-color: #ef4444;">
+          <span class="pattern-icon">⚡</span>
+          <div>
+            <div class="pattern-name">Redis Caching</div>
+            <div class="pattern-desc">Distributed cache layer reducing DB load with TTL-based invalidation for order state and session data.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <div class="status-item"><span class="status-dot"></span>All Services Healthy</div>
+    <div class="status-item"><span class="status-dot amber"></span>Kafka Lag: 0ms</div>
+    <div class="status-item"><span class="status-dot cyan"></span>Prometheus Scraping</div>
+    <div class="status-item"><span class="status-dot"></span>HPA Scaling Active</div>
+  </div>
+
+  <!-- Tech pills -->
+  <div class="tech-row">
+    <span class="tech-pill p-spring">Spring Boot</span>
+    <span class="tech-pill p-kafka">Kafka</span>
+    <span class="tech-pill p-k8s">Kubernetes</span>
+    <span class="tech-pill p-redis">Redis</span>
+    <span class="tech-pill p-prom">Prometheus</span>
+    <span class="tech-pill p-grafana">Grafana</span>
+    <span class="tech-pill p-jwt">JWT</span>
+    <span class="tech-pill p-mysql">MySQL</span>
+  </div>
+
+</div>
+</body>
+</html>
