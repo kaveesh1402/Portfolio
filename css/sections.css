@@ -1,0 +1,28 @@
+/* ── Section basics ───────────────────────────── */
+section {
+  padding: 100px 48px;
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 12px;
+}
+
+.section-label::before { content: '// '; }
+
+h2.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 56px;
+}
+
+@media (max-width: 768px) {
+  section { padding: 80px 24px; }
+}

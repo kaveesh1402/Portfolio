@@ -1,0 +1,180 @@
+/* ── Projects ─────────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.project-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 40px 36px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--rust);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover::before { transform: scaleX(1); }
+.project-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+
+/* Gen AI Project Special Styling */
+.project-card.ai-featured {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #faf8f3 0%, #f0ede8 100%);
+  border: 2px solid var(--rust);
+  border-radius: 2px;
+  box-shadow: 0 0 30px rgba(192, 57, 43, 0.15);
+  padding: 48px 44px;
+}
+
+.project-card.ai-featured::before {
+  background: linear-gradient(90deg, transparent, var(--rust), var(--gold), transparent);
+  height: 4px;
+}
+
+.project-card.ai-featured::after {
+  content: 'FEATURED';
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: white;
+  background: linear-gradient(135deg, var(--rust), var(--gold));
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  animation: slideInBadge 0.6s ease-out 0.3s backwards;
+}
+
+@keyframes slideInBadge {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.project-card.ai-featured:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(192, 57, 43, 0.25);
+}
+
+.project-num {
+  font-family: 'Fraunces', serif;
+  font-size: 60px;
+  font-weight: 900;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.project-card.ai-featured .project-num {
+  font-size: 72px;
+  background: linear-gradient(135deg, var(--rust), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.project-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.project-card.ai-featured .project-title {
+  font-size: 32px;
+  background: linear-gradient(135deg, var(--rust), var(--ink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.project-type {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 16px;
+}
+
+.project-card.ai-featured .project-type {
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--rust), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.project-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.project-card.ai-featured .project-desc {
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-tag {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.project-tag:hover {
+  background: var(--rust);
+  color: white;
+  border-color: var(--rust);
+}
+
+.project-card.ai-featured .project-tag {
+  background: linear-gradient(135deg, rgba(192, 57, 43, 0.1), rgba(201, 168, 76, 0.1));
+  border: 1px solid var(--rust);
+  color: var(--rust);
+  font-weight: 500;
+}
+
+.project-card.ai-featured .project-tag:hover {
+  background: linear-gradient(135deg, var(--rust), var(--gold));
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-card.ai-featured { grid-column: 1; }
+}
+

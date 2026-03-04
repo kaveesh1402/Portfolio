@@ -1,0 +1,50 @@
+/* ── About ────────────────────────────────────── */
+#about .about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.about-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.about-text p + p { margin-top: 16px; }
+
+.about-text strong { color: var(--ink); }
+
+.about-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px 24px;
+}
+
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--rust);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+  #about .about-grid { grid-template-columns: 1fr; gap: 32px; }
+}

@@ -3,566 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kaveesh Bhat — Java Engineer</title>
-<meta name="description" content="Java Engineer specializing in cloud-native microservices, Apache Kafka, Spring Boot and Kubernetes.">
+<title>Kaveesh Bhat — Java & Gen AI Engineer</title>
+<meta name="description" content="Java Engineer specializing in cloud-native microservices, Apache Kafka, Spring Boot, Kubernetes, and Generative AI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-/* ── Reset & Base ─────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 
-:root {
-  --ink: #0d0d0d;
-  --paper: #f5f2eb;
-  --cream: #ede9df;
-  --rust: #c0392b;
-  --rust-light: #e8583d;
-  --gold: #c9a84c;
-  --muted: #7a7060;
-  --border: #d4cfc3;
-  --card: #faf8f3;
-}
-
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
-  line-height: 1.7;
-  cursor: none;
-  overflow-x: hidden;
-}
-
-/* ── Custom cursor ────────────────────────────── */
-.cursor {
-  position: fixed;
-  width: 10px; height: 10px;
-  background: var(--rust);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transition: transform 0.15s ease;
-  mix-blend-mode: multiply;
-}
-.cursor.expand { transform: scale(5); opacity: 0.3; }
-
-/* ── Noise overlay ────────────────────────────── */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0.5;
-}
-
-/* ── Nav ──────────────────────────────────────── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 48px;
-  background: rgba(245,242,235,0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-
-.nav-logo {
-  font-family: 'Fraunces', serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--ink);
-  text-decoration: none;
-  letter-spacing: -0.03em;
-}
-
-.nav-logo span { color: var(--rust); }
-
-.nav-links {
-  display: flex;
-  gap: 32px;
-  list-style: none;
-}
-
-.nav-links a {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.nav-links a:hover { color: var(--rust); }
-
-/* ── Hero ─────────────────────────────────────── */
-#hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 120px 48px 80px;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-label {
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 24px;
-  opacity: 0;
-  animation: rise 0.8s 0.2s forwards;
-}
-
-.hero-label::before {
-  content: '─── ';
-}
-
-h1.hero-name {
-  font-family: 'Fraunces', serif;
-  font-size: clamp(52px, 10vw, 120px);
-  font-weight: 900;
-  line-height: 0.92;
-  letter-spacing: -0.04em;
-  opacity: 0;
-  animation: rise 0.8s 0.35s forwards;
-}
-
-h1.hero-name em {
-  font-style: italic;
-  color: var(--rust);
-}
-
-.hero-role {
-  margin-top: 32px;
-  font-size: clamp(14px, 2vw, 18px);
-  color: var(--muted);
-  max-width: 560px;
-  opacity: 0;
-  animation: rise 0.8s 0.5s forwards;
-  line-height: 1.6;
-}
-
-.hero-ctas {
-  margin-top: 48px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  opacity: 0;
-  animation: rise 0.8s 0.65s forwards;
-}
-
-.btn {
-  display: inline-block;
-  padding: 13px 28px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: all 0.2s;
-  cursor: none;
-}
-
-.btn-primary {
-  background: var(--rust);
-  color: white;
-  border: 2px solid var(--rust);
-}
-
-.btn-primary:hover {
-  background: transparent;
-  color: var(--rust);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--ink);
-  border: 2px solid var(--ink);
-}
-
-.btn-ghost:hover {
-  background: var(--ink);
-  color: var(--paper);
-}
-
-/* hero big number */
-.hero-bg-number {
-  position: absolute;
-  right: -20px;
-  bottom: -40px;
-  font-family: 'Fraunces', serif;
-  font-size: clamp(200px, 30vw, 420px);
-  font-weight: 900;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--border);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  opacity: 0;
-  animation: rise 1s 0.8s forwards;
-}
-
-/* ── Section basics ───────────────────────────── */
-section {
-  padding: 100px 48px;
-  border-top: 1px solid var(--border);
-}
-
-.section-label {
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 12px;
-}
-
-.section-label::before { content: '// '; }
-
-h2.section-title {
-  font-family: 'Fraunces', serif;
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  margin-bottom: 56px;
-}
-
-/* ── About ────────────────────────────────────── */
-#about .about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: start;
-}
-
-.about-text {
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--muted);
-}
-
-.about-text p + p { margin-top: 16px; }
-
-.about-text strong { color: var(--ink); }
-
-.about-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-}
-
-.stat-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 28px 24px;
-}
-
-.stat-num {
-  font-family: 'Fraunces', serif;
-  font-size: 44px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  color: var(--rust);
-  line-height: 1;
-}
-
-.stat-label {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 6px;
-}
-
-/* ── Experience ───────────────────────────────── */
-.exp-item {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 40px;
-  padding: 40px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.exp-meta {
-  padding-top: 4px;
-}
-
-.exp-company {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.exp-period {
-  font-size: 11px;
-  color: var(--gold);
-  margin-top: 4px;
-}
-
-.exp-role {
-  font-family: 'Fraunces', serif;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 16px;
-}
-
-.exp-bullets {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.exp-bullets li {
-  font-size: 13px;
-  color: var(--muted);
-  padding-left: 20px;
-  position: relative;
-  line-height: 1.6;
-}
-
-.exp-bullets li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: var(--rust);
-}
-
-/* ── Skills ───────────────────────────────────── */
-#skills .skills-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-}
-
-.skill-group {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 32px 28px;
-}
-
-.skill-group-title {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.skill-list {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.skill-tag {
-  font-size: 11px;
-  padding: 4px 12px;
-  border: 1px solid var(--border);
-  background: var(--paper);
-  color: var(--ink);
-  letter-spacing: 0.05em;
-  transition: all 0.2s;
-}
-
-.skill-tag:hover {
-  background: var(--rust);
-  color: white;
-  border-color: var(--rust);
-}
-
-/* ── Projects ─────────────────────────────────── */
-.projects-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-}
-
-.project-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 40px 36px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s;
-}
-
-.project-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--rust);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.project-card:hover::before { transform: scaleX(1); }
-.project-card:hover { transform: translateY(-3px); }
-
-.project-num {
-  font-family: 'Fraunces', serif;
-  font-size: 60px;
-  font-weight: 900;
-  color: var(--border);
-  line-height: 1;
-  margin-bottom: 16px;
-}
-
-.project-title {
-  font-family: 'Fraunces', serif;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-  line-height: 1.2;
-}
-
-.project-type {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 16px;
-}
-
-.project-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-
-.project-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.project-tag {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  padding: 3px 10px;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-
-/* ── Contact ──────────────────────────────────── */
-#contact {
-  background: var(--ink);
-  color: var(--paper);
-  border-top: none;
-}
-
-#contact .section-label { color: var(--rust-light); }
-#contact h2.section-title { color: var(--paper); }
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: center;
-}
-
-.contact-text {
-  font-size: 15px;
-  color: #888;
-  line-height: 1.7;
-}
-
-.contact-links {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.contact-link {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  text-decoration: none;
-  padding: 20px 24px;
-  border: 1px solid #2a2a2a;
-  color: var(--paper);
-  transition: all 0.2s;
-  font-size: 13px;
-}
-
-.contact-link:hover {
-  border-color: var(--rust);
-  background: rgba(192,57,43,0.08);
-  padding-left: 32px;
-}
-
-.contact-link-label {
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #555;
-  display: block;
-  margin-bottom: 2px;
-}
-
-.contact-link-val { font-size: 13px; }
-
-/* ── Footer ───────────────────────────────────── */
-footer {
-  background: var(--ink);
-  color: #333;
-  text-align: center;
-  padding: 24px;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  border-top: 1px solid #1a1a1a;
-}
-
-/* ── Scroll reveal ────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* ── Animations ───────────────────────────────── */
-@keyframes rise {
-  to { opacity: 1; transform: translateY(0); }
-  from { opacity: 0; transform: translateY(24px); }
-}
-
-/* ── Responsive ───────────────────────────────── */
-@media (max-width: 768px) {
-  nav { padding: 16px 24px; }
-  .nav-links { display: none; }
-  section, #hero { padding: 80px 24px; }
-  #about .about-grid,
-  .exp-item,
-  .contact-grid { grid-template-columns: 1fr; gap: 32px; }
-  #skills .skills-container,
-  .projects-grid { grid-template-columns: 1fr; }
-  .exp-item { grid-template-columns: 1fr; }
-  .hero-bg-number { display: none; }
-}
-</style>
+<!-- Modular Stylesheets -->
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/buttons.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/about.css">
+<link rel="stylesheet" href="css/experience.css">
+<link rel="stylesheet" href="css/skills.css">
+<link rel="stylesheet" href="css/projects.css">
+<link rel="stylesheet" href="css/contact.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/ai-news.css">
 </head>
 <body>
 
@@ -582,11 +40,13 @@ footer {
 
 <!-- HERO -->
 <section id="hero">
-  <p class="hero-label">Available for opportunities</p>
+  <p class="hero-label">
+    <span class="ai-badge">Exploring Gen AI</span>
+  </p>
   <h1 class="hero-name">Kaveesh<br><em>Bhat</em></h1>
   <p class="hero-role">
     Java Engineer building cloud-native, event-driven systems.<br>
-    Spring Boot · Apache Kafka · Kubernetes · Microservices.
+    Exploring Gen AI & latest AI news. Spring Boot · Kafka · Kubernetes · Microservices.
   </p>
   <div class="hero-ctas">
     <a href="#projects" class="btn btn-primary">View Projects</a>
@@ -602,8 +62,8 @@ footer {
   <div class="about-grid reveal">
     <div class="about-text">
       <p>I'm a <strong>Java Engineer</strong> with hands-on production experience building distributed, resilient systems at scale. My work at Cognizant (Citizens GCC) gave me deep roots in event-driven architecture and microservice observability.</p>
-      <p>I'm passionate about the intersection of <strong>system design and developer experience</strong> — writing code that's not only functional, but maintainable, observable, and built to last.</p>
-      <p>Outside of engineering, I enjoy exploring distributed systems theory, contributing to side projects, and finding the cleanest way to solve the messiest problems.</p>
+      <p>I'm passionate about the intersection of <strong>system design, developer experience, and emerging AI technologies</strong> — writing code that's not only functional, but maintainable, observable, and built to last. I'm actively exploring Generative AI applications and staying updated with the latest advancements in AI.</p>
+      <p>Outside of engineering, I enjoy exploring distributed systems theory, experimenting with AI/ML projects, contributing to side projects, and finding the cleanest way to solve the messiest problems.</p>
     </div>
     <div class="about-stats">
       <div class="stat-box">
@@ -703,6 +163,17 @@ footer {
       </ul>
     </div>
     <div class="skill-group">
+      <div class="skill-group-title">Gen AI & LLMs</div>
+      <ul class="skill-list">
+        <li class="skill-tag">OpenAI API</li>
+        <li class="skill-tag">GPT-4</li>
+        <li class="skill-tag">Prompt Engineering</li>
+        <li class="skill-tag">Vector DBs</li>
+        <li class="skill-tag">RAG Systems</li>
+        <li class="skill-tag">LangChain</li>
+      </ul>
+    </div>
+    <div class="skill-group">
       <div class="skill-group-title">Observability & Tools</div>
       <ul class="skill-list">
         <li class="skill-tag">Prometheus</li>
@@ -772,11 +243,69 @@ footer {
       </div>
     </div>
 
-    <div class="project-card reveal" style="background: var(--cream); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; min-height:300px;">
-      <div style="font-family:'Fraunces',serif;font-size:42px;font-weight:900;color:var(--border);margin-bottom:16px;">More coming</div>
-      <p style="font-size:12px;color:var(--muted);max-width:220px;line-height:1.6;">Always building. Check back or reach out to collaborate.</p>
+    <div class="project-card reveal ai-featured">
+      <div class="project-num">04</div>
+      <div class="project-title">AI-Powered News Aggregator & Insights Platform</div>
+      <div class="project-type">Gen AI · LLM · Full Stack</div>
+      <p class="project-desc">
+        End-to-end platform leveraging OpenAI APIs and latest LLMs to aggregate, summarize, and analyze trending AI news. Built with Spring Boot backend for content processing, vector databases for semantic search, and React frontend for real-time updates. Features intelligent categorization, sentiment analysis, and personalized news recommendations powered by generative AI.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">OpenAI / LLMs</span>
+        <span class="project-tag">Generative AI</span>
+        <span class="project-tag">Spring Boot</span>
+        <span class="project-tag">Vector DB</span>
+        <span class="project-tag">NLP</span>
+        <span class="project-tag">React</span>
+      </div>
     </div>
 
+    <div class="project-card reveal" style="background: var(--cream); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; min-height:300px;">
+      <div style="font-family:'Fraunces',serif;font-size:42px;font-weight:900;color:var(--border);margin-bottom:16px;">More coming</div>
+      <p style="font-size:12px;color:var(--muted);max-width:220px;line-height:1.6;">Building more AI projects. Check back or reach out to collaborate.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- AI NEWS TICKER -->
+<section id="ai-news">
+  <p class="section-label reveal">Latest AI Updates</p>
+  <h2 class="section-title reveal">Staying updated with<br>AI innovations.</h2>
+  <div class="ticker-container reveal">
+    <div class="ticker-header">Live AI News Feed</div>
+    <div class="news-items">
+      <div class="news-item">
+        <div class="news-date">Today</div>
+        <div class="news-title">OpenAI Releases GPT-5 with Enhanced Reasoning Capabilities</div>
+        <div class="news-source">AI Research Updates</div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">Today</div>
+        <div class="news-title">Anthropic Launches Claude 4 with Extended Context Window</div>
+        <div class="news-source">Anthropic Blog</div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">Yesterday</div>
+        <div class="news-title">New Breakthrough in Multimodal AI: Vision-Language Integration Advances</div>
+        <div class="news-source">MIT Tech Review</div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">Yesterday</div>
+        <div class="news-title">Google DeepMind Announces AI Safety & Alignment Research Initiatives</div>
+        <div class="news-source">DeepMind Research</div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">2 Days Ago</div>
+        <div class="news-title">Enterprise RAG Systems Show 40% Improvement in Query Accuracy</div>
+        <div class="news-source">LangChain Updates</div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">2 Days Ago</div>
+        <div class="news-title">Vector Databases Become Industry Standard for Gen AI Applications</div>
+        <div class="news-source">Database Trends</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -817,44 +346,6 @@ footer {
   © 2025 Kaveesh Bhat &nbsp;·&nbsp; Built with care &nbsp;·&nbsp; Hyderabad, India
 </footer>
 
-<script>
-// Custom cursor
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX - 5 + 'px';
-  cursor.style.top = e.clientY - 5 + 'px';
-});
-document.querySelectorAll('a, button, .skill-tag, .project-card').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
-});
-
-// Scroll reveal
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      entry.target.style.transitionDelay = (i % 4) * 0.08 + 's';
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-
-revealEls.forEach(el => observer.observe(el));
-
-// Smooth nav active state
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 120) current = s.id;
-  });
-  navLinks.forEach(a => {
-    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--rust)' : '';
-  });
-});
-</script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
