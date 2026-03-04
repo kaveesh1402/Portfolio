@@ -85,6 +85,16 @@ body::after {
   100% { background-position: 0% 50%; }
 }
 
+/* ── Touch device adjustments ─────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  .cursor {
+    display: none !important;
+  }
+  body {
+    cursor: auto;
+  }
+}
+
 /* ── Scroll reveal ────────────────────────────── */
 .reveal {
   opacity: 0;
